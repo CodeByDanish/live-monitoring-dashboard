@@ -29,10 +29,16 @@ function App() {
   } = useLiveStream();
 
   const timeFilteredEvents = useMemo(() => {
-    const cutoffTime = Date.now() - timeWindow * 1000;
+    if (events.length === 0) {
+      return [];
+    }
+
+    const latestTimestamp = events[events.length - 1].timestamp;
+
+    const cutoffTime = latestTimestamp - timeWindow * 1000;
 
     return events.filter(
-      (event: any) =>
+      (event) =>
         event.timestamp >= cutoffTime &&
         (statusFilter === "all" || event.status === statusFilter),
     );
